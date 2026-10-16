@@ -1,8 +1,7 @@
 """Build static page media from the CausalAlign paper workspace.
 
 Example (from this repository):
-    python scripts/prepare_assets.py --workspace .. \
-        --paper-pdf "D:/360Downloads/CausalAlign_open (1).pdf"
+    python scripts/prepare_assets.py --workspace ..
 """
 
 from __future__ import annotations
@@ -31,28 +30,24 @@ def render_figure(source: Path, dest: Path, zoom: float, quality: int = 88) -> N
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--workspace", type=Path, required=True)
-    parser.add_argument("--paper-pdf", type=Path, required=True)
     args = parser.parse_args()
     workspace = args.workspace.resolve()
-    paper_pdf = args.paper_pdf.resolve()
     ASSETS.mkdir(exist_ok=True)
 
-    shutil.copyfile(paper_pdf, ASSETS / "paper.pdf")
     demo = workspace / "demo" / "CausalAlign_demo_90s.mp4"
     shutil.copyfile(demo, ASSETS / "causalalign-demo.mp4")
 
     figure_dir = workspace / "CausalAlign_open_version" / "Figure"
-    render_figure(figure_dir / "rise_and_fall.pdf", ASSETS / "fig3-diagnosis.webp", 2.5)
-    render_figure(figure_dir / "loop_jittering.pdf", ASSETS / "fig4-trajectories.webp", 3.2)
+    render_figure(figure_dir / "rise_and_fall.pdf", ASSETS / "geometric-state-retention.webp", 2.5)
+    render_figure(figure_dir / "loop_jittering.pdf", ASSETS / "camera-trajectories.webp", 3.2)
 
     rollouts = Image.open(figure_dir / "wam_mobile_rollouts_1.png").convert("RGB")
-    rollouts.save(ASSETS / "fig6-rollouts.webp", "WEBP", quality=91, method=6)
     midpoint = rollouts.width // 2
     rollouts.crop((0, 0, midpoint, rollouts.height)).save(
-        ASSETS / "fig6-bowl.webp", "WEBP", quality=91, method=6
+        ASSETS / "rollout-bowl.webp", "WEBP", quality=91, method=6
     )
     rollouts.crop((midpoint, 0, rollouts.width, rollouts.height)).save(
-        ASSETS / "fig6-basket.webp", "WEBP", quality=91, method=6
+        ASSETS / "rollout-basket.webp", "WEBP", quality=91, method=6
     )
 
     layers = workspace / "demo" / "assets"
