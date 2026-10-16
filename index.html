@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CausalAlign improves camera ego-motion consistency in video generation models through causal diagnosis and delta-token alignment.">
+  <meta name="theme-color" content="#ffffff">
+  <title>CausalAlign — Consistent Ego-Motion in Video Generation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="hero" id="top">
+      <h1>CausalAlign: Causal Alignment of Video Generation Models for Consistent Ego-Motion</h1>
+      <div class="authors" aria-label="Authors">
+        <span>Kai Zhu<sup>1,*</sup></span>
+        <span>Yintianrun Zhang<sup>1,*</sup></span>
+        <span>Shuwei Jiang<sup>1</sup></span>
+        <span>Ruolin Zuo<sup>1</sup></span>
+        <span>Yixin Chen<sup>2</sup></span>
+        <span>Duomin Wang<sup>3</sup></span>
+        <span>Miao Liu<sup>4</sup></span>
+        <span>Yin Li<sup>5</sup></span>
+        <span>Daquan Zhou<sup>1</sup></span>
+        <span>Yiwu Zhong<sup>1,†</sup></span>
+      </div>
+      <div class="affiliations">
+        <span><sup>1</sup>Peking University</span>
+        <span><sup>2</sup>Beijing Institute for General Artificial Intelligence</span>
+        <span><sup>3</sup>NVIDIA</span>
+        <span><sup>4</sup>Tsinghua University</span>
+        <span><sup>5</sup>University of Wisconsin–Madison</span>
+      </div>
+      <p class="contributions"><sup>*</sup>Equal contribution &nbsp; <sup>†</sup>Corresponding author</p>
+      <div class="hero-links" aria-label="Paper links">
+        <a href="./assets/paper.pdf" target="_blank" rel="noopener">PDF</a>
+        <a href="https://github.com/PKU-VaLuE-Lab/CausalAlign" target="_blank" rel="noopener">Code</a>
+        <a href="#demo">Demo</a>
+      </div>
+    </header>
+
+    <section class="panel demo-panel" id="demo" aria-labelledby="demo-heading">
+      <h2 id="demo-heading">Demo</h2>
+      <video id="demo-video" controls playsinline preload="metadata" poster="./assets/demo-poster.webp" aria-label="CausalAlign 93-second research demo">
+        <source src="./assets/causalalign-demo.mp4" type="video/mp4">
+        Your browser does not support video playback. <a href="./assets/causalalign-demo.mp4">Download the demo</a>.
+      </video>
+      <nav class="chapters" aria-label="Demo chapters">
+        <button type="button" data-time="0" aria-current="true">Intro</button>
+        <button type="button" data-time="5">Motivation</button>
+        <button type="button" data-time="16">Two components</button>
+        <button type="button" data-time="24">Diagnosis</button>
+        <button type="button" data-time="32">Three stages</button>
+        <button type="button" data-time="44">Results</button>
+        <button type="button" data-time="75">RoboCasa365</button>
+      </nav>
+      <p class="demo-caption">The short demo introduces the causal diagnosis, three-stage alignment, camera trajectory comparisons, and downstream robot rollouts.</p>
+    </section>
+
+    <section class="panel" id="method" aria-labelledby="method-heading">
+      <h2 id="method-heading">Method</h2>
+      <p class="section-intro">CausalAlign identifies where a video generation model begins to forget ego-motion, then aligns those internal states with motion-centric delta tokens from a 3D foundation model.</p>
+      <figure class="paper-figure">
+        <button class="figure-button" type="button" data-full="./assets/method.webp" data-alt="CausalAlign three-stage alignment diagram" aria-label="Enlarge the three-stage method figure">
+          <img src="./assets/method.webp" alt="Three-stage CausalAlign pipeline: build teacher delta tokens, train a projector, and fine-tune causally selected VGM layers." loading="lazy" width="2980" height="1320">
+          <span class="zoom-hint" aria-hidden="true">Enlarge ↗</span>
+        </button>
+        <figcaption>Three-stage alignment from the paper. The dashed Align paths are preserved from the original method diagram.</figcaption>
+      </figure>
+      <div class="stages" aria-label="Training stages">
+        <article>
+          <span class="stage-number">01</span>
+          <h3>Build the teacher delta-token space</h3>
+          <p>Encode changes between frames with a 3D foundation model, separating ego-motion from static scene content.</p>
+        </article>
+        <article>
+          <span class="stage-number">02</span>
+          <h3>Train the VGM projector</h3>
+          <p>Map VGM feature transitions into the teacher delta-token space, then freeze the projector.</p>
+        </article>
+        <article>
+          <span class="stage-number">03</span>
+          <h3>Fine-tune selected VGM layers</h3>
+          <p>Apply delta-token supervision through LoRA adapters at the layers identified by causal diagnosis.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="quantitative" aria-labelledby="quant-heading">
+      <h2 id="quant-heading">Quantitative Results</h2>
+      <p class="section-intro">The diagnosis tracks internal ego-motion across denoising. Camera-motion benchmarks then measure geometry and temporal consistency, while visual-quality scores check that the gains do not come from degraded appearance.</p>
+
+      <div class="result-block">
+        <h3>Geometric state retention <span class="figure-ref">Figure 3</span></h3>
+        <figure class="paper-figure">
+          <button class="figure-button" type="button" data-full="./assets/fig3-diagnosis.webp" data-alt="Four plots of ego-motion probe decodability and causal effect across layers and denoising timesteps" aria-label="Enlarge Figure 3 diagnosis plots">
+            <img src="./assets/fig3-diagnosis.webp" alt="Wan2.2 probe decodability and causal effect rise and fall, while CausalAlign retains higher values in later layers and timesteps." loading="lazy" width="2638" height="585">
+            <span class="zoom-hint" aria-hidden="true">Enlarge ↗</span>
+          </button>
+          <figcaption>Probe decodability and causal intervention effects across transformer layers and denoising timesteps. CausalAlign shifts the pattern from rise-and-fall toward rise-and-maintain.</figcaption>
+        </figure>
+      </div>
+
+      <div class="result-block">
+        <h3>Camera ego-motion consistency <span class="figure-ref">Table 1</span></h3>
+        <p class="table-note">Higher is better for proximity and smoothness; lower is better for geometric errors and jerk. Values follow Table 1 in the updated paper.</p>
+        <div class="table-scroll" tabindex="0" aria-label="Scrollable camera ego-motion consistency table">
+          <table class="data-table motion-table">
+            <thead>
+              <tr>
+                <th scope="col" rowspan="2">Method</th>
+                <th scope="colgroup" colspan="2">Motion magnitude</th>
+                <th scope="colgroup" colspan="3">Geometric consistency</th>
+                <th scope="colgroup" colspan="2">Temporal dynamics</th>
+              </tr>
+              <tr>
+                <th scope="col">Trans. prox. ↑</th>
+                <th scope="col">Angular prox. ↑</th>
+                <th scope="col">Reproj. ↓</th>
+                <th scope="col">Depth–flow ↓</th>
+                <th scope="col">Epipolar ↓</th>
+                <th scope="col">Smoothness ↑</th>
+                <th scope="col">Jerk ↓</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="group-row"><th colspan="8" scope="rowgroup">Base model</th></tr>
+              <tr><th scope="row">Wan2.2</th><td>0.68</td><td>0.70</td><td>8.4</td><td>6.9</td><td>2.9</td><td>0.71</td><td>0.182</td></tr>
+              <tr class="group-row"><th colspan="8" scope="rowgroup">External 3D cache</th></tr>
+              <tr><th scope="row">GEN3C</th><td>0.63</td><td>0.75</td><td>7.8</td><td>6.5</td><td>2.8</td><td>0.71</td><td>0.175</td></tr>
+              <tr><th scope="row">Voyager</th><td>0.69</td><td>0.73</td><td>7.1</td><td>6.8</td><td>2.8</td><td>0.73</td><td>0.179</td></tr>
+              <tr class="group-row"><th colspan="8" scope="rowgroup">Preference alignment</th></tr>
+              <tr><th scope="row">VideoGPA</th><td>0.66</td><td>0.78</td><td>8.4</td><td>6.7</td><td>2.5</td><td>0.73</td><td>0.176</td></tr>
+              <tr><th scope="row">Epipolar-DPO</th><td>0.68</td><td>0.72</td><td>7.8</td><td>5.9</td><td>2.2</td><td>0.78</td><td>0.162</td></tr>
+              <tr class="group-row"><th colspan="8" scope="rowgroup">Direct feature alignment</th></tr>
+              <tr><th scope="row">JOG3R</th><td>0.70</td><td>0.75</td><td>7.2</td><td>5.9</td><td>2.5</td><td>0.79</td><td>0.158</td></tr>
+              <tr><th scope="row">Geometry Forcing</th><td>0.69</td><td>0.78</td><td>6.9</td><td>5.7</td><td>2.4</td><td>0.80</td><td>0.164</td></tr>
+              <tr><th scope="row">FantasyWorld</th><td>0.72</td><td>0.77</td><td>7.0</td><td>5.4</td><td>2.3</td><td>0.82</td><td>0.159</td></tr>
+              <tr class="ours-row"><th scope="row">CausalAlign (Ours)</th><td>0.79</td><td>0.89</td><td>6.5</td><td>5.5</td><td>2.1</td><td>0.88</td><td>0.151</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="result-block">
+        <h3>Visual quality preservation <span class="figure-ref">Table 2</span></h3>
+        <div class="quality-grid">
+          <div class="table-scroll" tabindex="0" aria-label="VBench-I2V quality table">
+            <table class="data-table">
+              <caption>VBench-I2V</caption>
+              <thead><tr><th scope="col">Method</th><th scope="col">Quality ↑</th><th scope="col">I2V score ↑</th><th scope="col">Smooth. ↑</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Wan2.2</th><td>0.805</td><td>0.958</td><td>0.983</td></tr>
+                <tr class="ours-row"><th scope="row">CausalAlign</th><td>0.806</td><td>0.958</td><td>0.985</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-scroll" tabindex="0" aria-label="Complementary visual quality table">
+            <table class="data-table">
+              <caption>Other visual metrics</caption>
+              <thead><tr><th scope="col">Method</th><th scope="col">FVD ↓</th><th scope="col">CLIP ↑</th><th scope="col">SSIM ↑</th><th scope="col">LPIPS ↓</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Wan2.2</th><td>182.4</td><td>0.311</td><td>0.742</td><td>0.183</td></tr>
+                <tr class="ours-row"><th scope="row">CausalAlign</th><td>182.7</td><td>0.314</td><td>0.744</td><td>0.183</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="table-note">Visual quality remains comparable to the Wan2.2 base model under matched prompts and sampling settings.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="qualitative" aria-labelledby="qual-heading">
+      <h2 id="qual-heading">Qualitative Results</h2>
+      <div class="result-block">
+        <h3>More consistent camera trajectories <span class="figure-ref">Figure 4</span></h3>
+        <figure class="paper-figure">
+          <button class="figure-button" type="button" data-full="./assets/fig4-trajectories.webp" data-alt="Wan2.2 and CausalAlign generated frames and reconstructed camera trajectories" aria-label="Enlarge Figure 4 trajectory comparison">
+            <img src="./assets/fig4-trajectories.webp" alt="Two scenes compare generated frames and camera trajectories. CausalAlign has fewer jitters in the straight scene and less loop-closure drift in the looping scene." loading="lazy" width="2064" height="866">
+            <span class="zoom-hint" aria-hidden="true">Enlarge ↗</span>
+          </button>
+          <figcaption>The straight-motion example shows fewer trajectory jitters. In the loop example, CausalAlign ends closer to the origin.</figcaption>
+        </figure>
+      </div>
+      <div class="result-block">
+        <h3>Successful mobile manipulation <span class="figure-ref">Figure 6</span></h3>
+        <p class="table-note">The two rollout sequences from Figure 6 are stacked below so each frame remains legible on the web.</p>
+        <figure class="rollout-figure">
+          <div class="rollout-sequence">
+            <h4>Food bowl → refrigerator</h4>
+            <button class="figure-button" type="button" data-full="./assets/fig6-bowl.webp" data-alt="Four frames of a robot placing a food bowl in a refrigerator" aria-label="Enlarge the food bowl rollout">
+              <img src="./assets/fig6-bowl.webp" alt="Four sequential frames of the robot collecting food in a bowl and placing it inside a refrigerator." loading="lazy" width="1036" height="256">
+              <span class="zoom-hint" aria-hidden="true">Enlarge ↗</span>
+            </button>
+          </div>
+          <div class="rollout-sequence">
+            <h4>Bread basket → counter</h4>
+            <button class="figure-button" type="button" data-full="./assets/fig6-basket.webp" data-alt="Four frames of a robot moving a bread basket to a dining counter" aria-label="Enlarge the bread basket rollout">
+              <img src="./assets/fig6-basket.webp" alt="Four sequential frames of the robot carrying a bread basket from the cabinet area to the dining counter." loading="lazy" width="1036" height="256">
+              <span class="zoom-hint" aria-hidden="true">Enlarge ↗</span>
+            </button>
+          </div>
+          <figcaption>Two successful RoboCasa365 policy rollouts, with frames in temporal order from left to right. These are visual examples; success-rate comparisons are reported separately in the paper.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <footer>
+      <p>CausalAlign · <a href="./assets/paper.pdf">Paper PDF</a> · <a href="#top">Back to top ↑</a></p>
+    </footer>
+  </main>
+
+  <dialog id="figure-dialog" aria-label="Expanded research figure">
+    <button class="dialog-close" type="button" aria-label="Close enlarged figure">×</button>
+    <img src="" alt="">
+  </dialog>
+</body>
+</html>
