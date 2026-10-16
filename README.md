@@ -6,13 +6,13 @@ Page order: title and authors → demo → abstract → three-stage method → q
 
 ## Preview
 
-From the repository root:
+From the repository root, run:
 
 ```sh
-python -m http.server 8000
+python -m http.server 8000 --bind 127.0.0.1 --directory ..
 ```
 
-Open `http://localhost:8000/`. The committed page needs no build step.
+Open `http://127.0.0.1:8000/CausalAlign-homepage/` in your browser. Keep the terminal open while previewing, and press `Ctrl+C` to stop the server. This path mirrors the final project's `/CausalAlign-homepage/` subpath. The committed page needs no build step.
 
 ## Source material
 
@@ -26,7 +26,7 @@ This optional script requires PyMuPDF, Pillow, and OpenCV. The site itself has n
 
 ## Publishing destination
 
-This repository is currently private at `j-zhu23/CausalAlign-homepage`. The intended public Pages URL is `https://pku-value-lab.github.io/CausalAlign-homepage/` after the repository is moved to the PKU-VaLuE-Lab account and GitHub Pages is enabled there. All local asset URLs are relative, so they work under that subpath.
+This repository is currently private at `j-zhu23/CausalAlign-homepage`. The latest paper gives `https://pku-value-lab.github.io/CausalAlign-homepage/` as the project URL; it is also used as this site's canonical and Open Graph URL. The address will become live after the repository is moved to the PKU-VaLuE-Lab account and GitHub Pages is enabled there. All local asset URLs are relative, so they work under that subpath.
 
 The Paper button temporarily links to `https://arxiv.org/abs/2603.02133`. **That ID currently resolves to SimRecon, not CausalAlign, and must be replaced before this page is public.** The Code button is labelled “Coming soon” until the code repository is ready.
 
