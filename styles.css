@@ -61,7 +61,7 @@ button { font: inherit; }
   gap: 12px;
   margin-bottom: 38px;
 }
-.hero-links a, .hero-links .coming-soon {
+.hero-links a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -77,15 +77,6 @@ button { font: inherit; }
   transition: background-color .2s ease, box-shadow .2s ease;
 }
 .hero-links a:hover { background: var(--blue-dark); box-shadow: 0 4px 9px #00000026; }
-.hero-links .coming-soon {
-  background: #e8f0fe;
-  box-shadow: none;
-  color: var(--blue-dark);
-  font-weight: 500;
-  cursor: default;
-}
-.hero-links .coming-soon small { font-size: .72em; }
-
 .panel {
   margin: 0 0 30px;
   padding: 30px;
