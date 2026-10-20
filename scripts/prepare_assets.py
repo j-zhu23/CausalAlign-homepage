@@ -34,7 +34,7 @@ def main() -> None:
     workspace = args.workspace.resolve()
     ASSETS.mkdir(exist_ok=True)
 
-    demo = workspace / "demo" / "CausalAlign_demo_153s.mp4"
+    demo = workspace / "demo" / "CausalAlign_demo_158s.mp4"
     shutil.copyfile(demo, ASSETS / "causalalign-demo.mp4")
 
     figure_dir = workspace / "CausalAlign_open_version" / "Figure"
