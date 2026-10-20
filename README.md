@@ -16,7 +16,7 @@ Open `http://127.0.0.1:8000/CausalAlign-homepage/` in your browser. Keep the ter
 
 ## Source material
 
-The assets are generated from the CausalAlign paper workspace by `scripts/prepare_assets.py`. The abstract follows the updated CausalAlign PDF; visual assets come from the paper's figure sources and the method slide layers. The demo is the latest 106-second narrated render. To regenerate the media on the original workspace:
+The assets are generated from the CausalAlign paper workspace by `scripts/prepare_assets.py`. The abstract follows the updated CausalAlign PDF; visual assets come from the paper's figure sources and the method slide layers. The demo is the latest 153-second narrated render. To regenerate the media on the original workspace:
 
 ```sh
 python scripts/prepare_assets.py --workspace ..

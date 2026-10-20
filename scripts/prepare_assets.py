@@ -34,7 +34,7 @@ def main() -> None:
     workspace = args.workspace.resolve()
     ASSETS.mkdir(exist_ok=True)
 
-    demo = workspace / "demo" / "CausalAlign_demo_106s.mp4"
+    demo = workspace / "demo" / "CausalAlign_demo_153s.mp4"
     shutil.copyfile(demo, ASSETS / "causalalign-demo.mp4")
 
     figure_dir = workspace / "CausalAlign_open_version" / "Figure"
@@ -62,10 +62,10 @@ def main() -> None:
 
     cap = cv2.VideoCapture(str(demo))
     try:
-        cap.set(cv2.CAP_PROP_POS_MSEC, 12000)
+        cap.set(cv2.CAP_PROP_POS_MSEC, 19500)
         ok, frame = cap.read()
         if not ok:
-            raise RuntimeError("Cannot read the 12-second demo poster frame")
+            raise RuntimeError("Cannot read the 19.5-second demo poster frame")
         poster = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         poster.save(ASSETS / "demo-poster.webp", "WEBP", quality=84, method=6)
     finally:
