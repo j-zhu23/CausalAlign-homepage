@@ -57,8 +57,8 @@
 
     <section class="panel abstract-panel" id="abstract" aria-labelledby="abstract-heading">
       <h2 id="abstract-heading">Abstract</h2>
-      <p>Diffusion-based video generation models (VGMs) can produce visually plausible videos, yet their camera ego-motion often drifts over long horizons. Camera ego-motion determines how the viewpoint changes between frames and is essential for maintaining consistent geometry and trajectories. To address this problem, we propose <strong>CausalAlign</strong>, a causal alignment framework with two components.</p>
-      <p>First, we diagnose how precise ego-motion is represented, used, and retained within VGMs using linear probes and causal interventions, revealing a rise-and-fall pattern during denoising. Second, we construct a delta-token space from a 3D foundation model and align VGM representations at causally identified positions. Delta tokens encode changes between consecutive frames, allowing the alignment to focus on ego-motion rather than static scene content.</p>
+      <p>Diffusion-based video generation models (VGMs) can synthesize visually compelling content, but maintaining geometrically consistent camera ego-motion across frames remains an open problem. Camera ego-motion describes these cross-frame viewpoint changes; geometrically inconsistent future predictions can induce systematic errors in downstream action prediction. To address this problem, we propose <strong>CausalAlign</strong>, a framework combining causal diagnosis and delta-token alignment.</p>
+      <p>First, we diagnose how ego-motion is represented, used, and retained within VGMs using linear probes and causal interventions. In the base model, both measures rise and then fall across denoising layers and timesteps: ego-motion is used at intermediate stages but is not retained later, a pattern we call <em>geometric state forgetting</em>. Second, we construct a delta-token space from a 3D foundation model and align VGM representations where ego-motion begins to fade. Delta tokens encode changes between consecutive frames, focusing supervision on motion rather than redundant static scene content.</p>
       <p>With Wan2.2 fine-tuned on DL3DV and RealEstate10K, CausalAlign preserves visual quality while improving motion accuracy, geometric consistency, and temporal smoothness. For example, it reduces geometric consistency errors by more than <strong>20%</strong> relative to the base model. Moreover, using the fine-tuned VGM, CausalAlign improves downstream world action models (WAMs) on the RoboCasa365 benchmark. Overall, CausalAlign improves ego-motion consistency in diffusion-based VGMs and yields gains in downstream embodied models on motion-intensive tasks.</p>
     </section>
 
@@ -181,10 +181,10 @@
         <h3>More consistent camera trajectories</h3>
         <figure class="paper-figure">
           <button class="figure-button" type="button" data-full="./assets/camera-trajectories.webp" data-alt="Wan2.2 and CausalAlign generated frames and reconstructed camera trajectories" aria-label="Enlarge camera trajectory comparison">
-            <img src="./assets/camera-trajectories.webp" alt="Two scenes compare generated frames and camera trajectories. CausalAlign has fewer jitters in the straight scene and less loop-closure drift in the looping scene." loading="lazy" width="2064" height="866">
+            <img src="./assets/camera-trajectories.webp" alt="Two scenes compare generated frames and camera trajectories. CausalAlign shows less trajectory jitter in the straight scene and less loop-closure drift in the looping scene." loading="lazy" width="2064" height="866">
             <span class="zoom-hint" aria-hidden="true">Enlarge ↗</span>
           </button>
-          <figcaption>The straight-motion example shows fewer trajectory jitters. In the loop example, CausalAlign ends closer to the origin.</figcaption>
+          <figcaption>The straight-motion example shows less trajectory jitter. In the loop example, CausalAlign ends closer to the origin, indicating less loop-closure drift.</figcaption>
         </figure>
       </div>
       <div class="result-block">
