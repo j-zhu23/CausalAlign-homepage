@@ -28,4 +28,4 @@ This optional script requires PyMuPDF, Pillow, and OpenCV. The site itself has n
 
 The public site is `https://pku-value-lab.github.io/CausalAlign-homepage/`, published from the root of the `main` branch in `PKU-VaLuE-Lab/CausalAlign-homepage`. All local asset URLs are relative to that project path. The personal `j-zhu23/CausalAlign-homepage` repository is a public working copy with the same current files.
 
-The Paper button temporarily points to the author's requested `https://arxiv.org/abs/2603.02133`; replace it when the CausalAlign arXiv entry is available. The Code button links to `https://github.com/PKU-VaLuE-Lab/CausalAlign`, which hosts the updated demo and the released training and WAM code.
+The Paper button links to the CausalAlign preprint at `https://arxiv.org/abs/2610.29915`, and the Hugging Face button links to `https://huggingface.co/papers/2610.29915`. The Code button links to `https://github.com/PKU-VaLuE-Lab/CausalAlign`, which hosts the updated demo and the released training and WAM code.
